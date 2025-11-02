@@ -1,0 +1,38 @@
+def check_guess_detailed(secret: list, guess: list) -> None:
+    """
+    Checks the player's guess against the secret code and
+    prints a per-color feedback (B for black, W for white, blank if incorrect).
+    """
+
+    feedback = [""] * len(secret)  # same length as code
+    secret_copy = secret.copy()
+    guess_copy = guess.copy()
+
+    # Step 1: Count Black Pegs (correct color + correct position)
+    for i in range(len(secret)):
+        if guess[i] == secret[i]:
+            feedback[i] = "B"  # Black Peg
+            secret_copy[i] = None
+            guess_copy[i] = None
+
+    # Step 2: Count White Pegs (correct color, wrong position)
+    for i in range(len(guess_copy)):
+        if guess_copy[i] is not None and guess_copy[i] in secret_copy:
+            feedback[i] = "W"  # White Peg
+            # Remove matched color from secret_copy
+            secret_copy[secret_copy.index(guess_copy[i])] = None
+
+    # Step 3: Display Input/Output Format
+    print("\nInput: " + ", ".join(guess))
+    output_display = []
+    for color, fb in zip(guess, feedback):
+        if fb == "":
+            fb = "-"  # show dash if incorrect
+        output_display.append(f"{color} → {fb}")
+    print("Output: " + ", ".join(output_display))
+
+    # Step 4: Game message
+    if all(fb == "B" for fb in feedback):
+        print("✅ You guessed the code correctly! Congratulations!")
+    else:
+        print("❌ Incorrect guess. Try again!")
